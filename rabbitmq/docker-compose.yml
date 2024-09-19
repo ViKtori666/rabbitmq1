@@ -1,0 +1,73 @@
+version: "3" # Specify the version of Docker Compose.
+
+services:
+
+  rabbit_mq:
+    image: rabbitmq:3.10.7-management # Use the RabbitMQ Docker image with the management plugin.
+    container_name: rabbit_mq # Assign a custom name to the RabbitMQ container.
+    hostname: rabbitmq # Set the hostname for the RabbitMQ container.
+    restart: always # Ensure that the container restarts automatically if it exits.
+    ports:
+        - '15672:15672' # Map the RabbitMQ management UI port to the host machine.
+    volumes:
+      - rabbit_mqdata:/usr/share/rabbitmq/data # Create a volume for RabbitMQ data storage.
+
+  producer:
+    build: producer # Build the 'producer' service using the Dockerfile in the 'producer' directory.
+    depends_on:
+        - rabbit_mq # Specify that the 'producer' service depends on the 'rabbit_mq' service.
+    volumes:
+      - ./producer:/usr/src/app/producer # Mount the 'producer' code into the 'producer' service container.
+      
+  producerf:
+    build: producerf # Build the 'producer' service using the Dockerfile in the 'producer' directory.
+    depends_on:
+        - rabbit_mq # Specify that the 'producer' service depends on the 'rabbit_mq' service.
+    volumes:
+      - ./producerf:/usr/src/app/producerf # Mount the 'producer' code into the 'producer' service container.
+    
+  producert:
+    build: producert # Build the 'producer' service using the Dockerfile in the 'producer' directory.
+    depends_on:
+        - rabbit_mq # Specify that the 'producer' service depends on the 'rabbit_mq' service.
+    volumes:
+      - ./producert:/usr/src/app/producert # Mount the 'producer' code into the 'producer' service container.
+      
+  producerh:
+    build: producerh # Build the 'producer' service using the Dockerfile in the 'producer' directory.
+    depends_on:
+        - rabbit_mq # Specify that the 'producer' service depends on the 'rabbit_mq' service.
+    volumes:
+      - ./producerh:/usr/src/app/producerh # Mount the 'producer' code into the 'producer' service container.
+
+  consumer:
+    build: consumer
+    depends_on:
+        - rabbit_mq
+    volumes:
+      - ./consumer:/usr/src/app/consumer
+      
+  consumerf:
+    build: consumerf
+    depends_on:
+        - rabbit_mq
+    volumes:
+      - ./consumerf:/usr/src/app/consumerf
+      
+  consumert:
+    build: consumert
+    depends_on:
+        - rabbit_mq
+    volumes:
+      - ./consumert:/usr/src/app/consumert
+      
+  consumerh:
+    build: consumerh
+    depends_on:
+        - rabbit_mq
+    volumes:
+      - ./consumerh:/usr/src/app/consumerh
+
+volumes:
+    rabbit_mqdata:
+      driver: local # Define a local volume named 'rabbit_mqdata'.
